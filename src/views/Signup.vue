@@ -40,7 +40,9 @@ export default {
         password: this.password
       })
         .then(response => {
-          console.log(response);
+          const { data } = response.data;
+          localStorage.setItem("auth", JSON.stringify(data));
+          this.$root.auth = data;
         })
         .catch(({ response }) => {
           console.log(response);
