@@ -6,7 +6,7 @@
           <h3 class="text-center my-4">Signup</h3>
           <div class="form-group">
             <input
-              :class="{ 'is-invalid': errors.name, 'is-valid': !errors.name && this.submitted }"
+              v-bind:class="{ 'is-invalid': errors.name, 'is-valid': !errors.name && this.submitted }"
               v-model="name"
               type="text"
               placeholder="Name"
@@ -18,7 +18,7 @@
           </div>
           <div class="form-group">
             <input
-              :class="{ 'is-invalid': errors.email, 'is-valid': !errors.email && this.submitted }"
+              v-bind:class="{ 'is-invalid': errors.email, 'is-valid': !errors.email && this.submitted }"
               v-model="email"
               type="text"
               placeholder="Email"
@@ -30,7 +30,7 @@
           </div>
           <div class="form-group">
             <input
-              :class="{ 'is-invalid': errors.password, 'is-valid': !errors.password && this.submitted }"
+              v-bind:class="{ 'is-invalid': errors.password, 'is-valid': !errors.password && this.submitted }"
               v-model="password"
               type="password"
               placeholder="Password"
@@ -41,7 +41,14 @@
             </div>
           </div>
           <div class="form-group text-center">
-            <button @click="registerUser()" class="btn form-control btn-success">Signup</button>
+            <button
+              @click="registerUser()"
+              :disabled="loading"
+              class="btn form-control btn-success"
+            >
+              <i class="fas fa-spin fa-spinner" v-if="loading"></i>
+              {{ loading ? '' : 'Signup' }}
+            </button>
           </div>
         </div>
       </div>
@@ -58,17 +65,20 @@ export default {
       email: "",
       password: "",
       errors: {},
-      submitted: false
+      submitted: false,
+      loading: false
     };
   },
   methods: {
     registerUser() {
+      this.loading = true;
       Axios.post("https://react-blog-api.bahdcasts.com/api/auth/register", {
         name: this.name,
         email: this.email,
         password: this.password
       })
         .then(response => {
+          this.loading = false;
           this.submitted = true;
           const { data } = response.data;
           localStorage.setItem("auth", JSON.stringify(data));
@@ -76,6 +86,7 @@ export default {
           this.$router.push("home");
         })
         .catch(({ response }) => {
+          this.loading = false;
           this.submitted = true;
           this.errors = response.data;
         });
