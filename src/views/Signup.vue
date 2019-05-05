@@ -83,7 +83,7 @@ export default {
           const { data } = response.data;
           localStorage.setItem("auth", JSON.stringify(data));
           this.$root.auth = data;
-          this.$router.push("home");
+          this.$router.push("/");
         })
         .catch(({ response }) => {
           this.loading = false;
